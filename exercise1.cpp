@@ -158,11 +158,6 @@ public:
         //*curr points to the previous DLink of *tail, thereby pointing to the last DLink
         curr = tail->prevPtr;
 
-        //theList.moveToEnd()
-        //theList.insert(1000)
-        // - - - - - curr
-        // - - - - - 1000 curr
-
         //dili mainsertan si curr if == tail
     }
 
@@ -229,17 +224,6 @@ public:
     }
 
     // Remove and return the current element
-    //
-    //What happens to curr?
-    //
-    //curr->next ang maremove
-    //
-    //DOUBLE CHECK
-    //DOUBLE CHECK
-    //DOUBLE CHECK
-    //DOUBLE CHECK
-    //DOUBLE CHECK
-    //DOUBLE CHECK
     E remove()
     {   //assert(curr->nextPtr == tail);
         assert(cnt > 0);
