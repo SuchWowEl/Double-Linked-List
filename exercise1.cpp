@@ -99,7 +99,7 @@ public:
         cnt = 0;
 
         //*looper's role is to "loop through" the DLinks in source, starting from the DLink next to *head's up until the
-        //last appended DLink just before *tail. *looper will be updated and pointed to the same DLink
+        //last appended DLink just before *tail's. *looper will be updated and pointed to the same DLink
         //as it's *nextPtr, in other words moving through the DList source once for every iteration of the loop
         for(DLink<E> *looper = source.head->nextPtr; looper != source.tail; looper = looper->nextPtr){
             //append a new DLink to current object's DList by calling append() and passing the *looper DLink's theElement
@@ -123,7 +123,7 @@ public:
     // Empty the list
     void clear()
     {
-        if(cnt > 0){//checks first if there are nodes in between *head and *tail
+        if(cnt > 0){//checks first if there are DLink/s in between *head's and *tail's
             curr = head->nextPtr;
             DLink<E> *temp;
 
@@ -151,16 +151,14 @@ public:
     // Set current element to end of list
     void moveToEnd()
     {
-        //*curr points to the previous DLink of *tail, thereby pointing to the last DLink
+        //*curr points to the previous DLink of *tail
         curr = tail->prevPtr;
-
-        //dili mainsertan si curr if == tail
     }
 
     // Advance current to the next element
     void next()
     {
-        //checks first if there are DLinks between *head and *tail and *curr is not before *tail nor before the DLink behind of *tail's,
+        //checks first if there are DLinks between *head and *tail, and *curr is not before *tail or before the DLink behind of *tail's,
         //if so assigns *curr to the next DLink 
         if(cnt > 0 && (curr->nextPtr != tail->prevPtr || curr->nextPtr != tail)) curr = curr->nextPtr;
     }
@@ -169,9 +167,9 @@ public:
     //Double Check
     E & getValue() const
     {
-        //asserts first if *curr isn't NULL before
-        //returning its theElement
-        assert(curr != tail->prevPtr  && curr != tail);
+        //asserts first if *curr's DLink isn't before the DLink pointed by *tail or *curr is not the same as *tail before
+        //returning curr->nextPtr->theElement
+        assert(curr != tail->prevPtr || curr != tail);
         return curr->nextPtr->theElement;
     }
 
@@ -215,13 +213,13 @@ public:
 
     // Remove and return the current element
     E remove()
-    {   //assert(curr->nextPtr == tail);
+    {
         assert(cnt > 0);
         if(curr->nextPtr == tail) return '\0';//E(NULL)
 
         E it = curr->nextPtr->theElement;
         //We aim to delete *temp by the end, so we connect first the DLinks of *curr's
-        //and after it then delete the DLink pointed by *temp
+        //and after it, then delete the DLink pointed by *temp
         DLink<E> *temp = curr->nextPtr;
         curr->nextPtr->nextPtr->prevPtr = curr;
         curr->nextPtr = curr->nextPtr->nextPtr;
@@ -229,6 +227,7 @@ public:
         //decrement cnt
         cnt--;
 
+        //move curr to the previous DLink if *curr's DLink is next to tail annd is not the same with *head's
         if(curr->nextPtr == tail && curr != head) curr = curr->prevPtr;
         return it;
     }
@@ -236,8 +235,8 @@ public:
     // Advance current to the previous element
     void prev()
     {
-        //checks first if there are DLinks between *head's and *tail's DLinks and *curr is not equal to *head,
-        //if so assigns *curr to the previous DLink 
+        //checks first if there are DLinks between *head's and *tail's, and *curr is not the same with *head.
+        //If so assigns *curr to the previous DLink 
         if(cnt > 0 && curr != head) curr = curr->prevPtr;
     }
 
@@ -246,7 +245,7 @@ public:
     {
         int num;
         DLink<E> *temp = head;
-        //checks first if *temp is equal to *curr before incrementing num
+        //checks first if *temp is not equal to *curr before incrementing num
         for(num = 0; temp != curr; num++){
             temp = temp->nextPtr;
         }
@@ -257,6 +256,7 @@ public:
     // Set current to the element at the given position
     void moveToPos(int pos)
     {
+        //asserts first that pos is not negative and is less than cnt
         assert(0 <= pos && pos < cnt);
         curr = head;
         //checks first if i is less than pos before moving *curr 1 DLink to the right
