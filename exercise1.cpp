@@ -315,7 +315,6 @@ int main(void)
         //cout<<i;
 
         theList.append(i + 100);
-        theList.moveToEnd();//ako nagedit
     }
 
     // display the contents of the list
@@ -328,7 +327,7 @@ int main(void)
     }
     cout << "\n";
 
-    cout << endl << "kobe" << endl;
+    cout << "\n\n";
 
     // remove two elements at the specified position
     theList.moveToPos(9);
@@ -350,9 +349,7 @@ int main(void)
     theList.moveToPos(3);
     cout << "\n" << "theList's curr is " << theList.getValue() << endl;
     DList<int> anothaOne(theList);
-    cout << "\n\n" << "anothaOne's curr is " << anothaOne.getValue() << endl << endl;
-
-    cout<<"theList is copied to anothaOne"<<endl;
+    cout << "anothaOne's curr is " << anothaOne.getValue() << endl << endl;
     cout<<"length of anothaOne is "<<anothaOne.length()<<"\n\n";
     
     //100 101 102 103 104 105 106 107
@@ -391,7 +388,7 @@ int main(void)
         anothaOne.next();
     }
 
-    anothaOne.moveToEnd();//getValue() = 69
+    anothaOne.moveToEnd();
     anothaOne.insert(9999);
     anothaOne.moveToStart();
     cout <<"\n\n";
