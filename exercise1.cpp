@@ -55,9 +55,6 @@ public:
     DList()
     {
         //allocates memory for head and tail
-        //cout << head << "   " << tail <<endl;
-        //cout<<"def ctor called"<<endl;
-        
         curr = head = new DLink<E>;
         tail = new DLink<E>;
 
@@ -101,11 +98,11 @@ public:
         //sets cnt to 0
         cnt = 0;
 
-        //*looper's role is to "loop through" the DLinks in source, starting from the *head->nextPtr up until the
-        //last appended DLink just before the tail. *looper will be updated and pointed to the same DLink
-        //as it's *nextPtr, in other words moving through the loop once for every iteration of the loop
+        //*looper's role is to "loop through" the DLinks in source, starting from the DLink next to *head's up until the
+        //last appended DLink just before *tail. *looper will be updated and pointed to the same DLink
+        //as it's *nextPtr, in other words moving through the DList source once for every iteration of the loop
         for(DLink<E> *looper = source.head->nextPtr; looper != source.tail; looper = looper->nextPtr){
-            //appends to current object's DList by calling append() and passing the *looper DLink's theElement
+            //append a new DLink to current object's DList by calling append() and passing the *looper DLink's theElement
             append(looper->theElement);
 
             //assigns the current object's *curr if looper happens to point at the same DLink as the source's *curr
@@ -116,9 +113,7 @@ public:
     // The class destructor
     ~DList()
     {
-        //DLink<E> *temp;
-        //cout << "before " << tail->prevPtr << endl;
-        clear();//clear() deletes all the DLinks aside from *head, *tail, and *curr
+        clear();//delete all the DLinks aside from *head and *tail's
         
         //delete manually *head and *tail, deallocating the memory
         delete head;
@@ -131,12 +126,14 @@ public:
         if(cnt > 0){//checks first if there are nodes in between *head and *tail
             curr = head->nextPtr;
             DLink<E> *temp;
-            //cout << "cnt = "<< cnt << endl;
+
+            //deletes DLink one by one
             while(curr!=tail){
                 temp = curr->nextPtr;
                 delete curr;// deletes *curr, deallocating the memory
                 curr = temp;
             }
+            //connecting head and tail
             curr = head;
             head->nextPtr = tail;
             tail->prevPtr = head;
@@ -147,8 +144,7 @@ public:
     // Set current to first element
     void moveToStart()
     {
-        //Checks first if there's a DLink between *head and *tail before
-        //*curr points to the next DLink of *head, thereby pointing to the first DLink
+        //*curr points to the DLink of *head
         curr = head;
     }
 
@@ -164,9 +160,9 @@ public:
     // Advance current to the next element
     void next()
     {
-        //checks first if there are DLinks between *head and *tail and *curr is not before *tail,
+        //checks first if there are DLinks between *head and *tail and *curr is not before *tail nor before the DLink behind of *tail's,
         //if so assigns *curr to the next DLink 
-        if(cnt > 0 && (curr != tail->prevPtr->prevPtr/* || curr != tail*/)) curr = curr->nextPtr;
+        if(cnt > 0 && (curr->nextPtr != tail->prevPtr || curr->nextPtr != tail)) curr = curr->nextPtr;
     }
 
     // Return the current element
@@ -188,19 +184,14 @@ public:
         DLink<E> *temp = new DLink<E>;
         assert(temp != NULL);
 
-        //inserting the DLink pointed by *temp after *before and before *before->nextPtr, the DLink after *before originally
+        //inserting the DLink pointed by *temp after *curr's and before *curr->nextPtr's, the DLink after *curr's DLink originally
         temp->nextPtr = curr->nextPtr;
         temp->prevPtr = curr;
         curr->nextPtr = curr->nextPtr->prevPtr = temp;
-        
-        //inserting the DLink pointed by *temp before *curr's and after *curr->prevPtr, the DLink after *before originally
-        /*temp->prevPtr = curr->prevPtr;
-        temp->nextPtr = curr;
-        curr->prevPtr = curr->prevPtr->nextPtr = temp;*/
 
         //setting the DLink's theElement value to it
         temp->theElement = it;
-        //the only part in the code where cnt is incremented
+        //increment cnt
         cnt++;
     }
 
@@ -211,16 +202,15 @@ public:
         DLink<E> *temp = new DLink<E>;
         assert(temp != NULL);
 
-        //inserting the DLink pointed by *temp after *before and before *before->nextPtr, the DLink after *before originally
+        //inserting the DLink pointed by *temp after *tail->prevPtr's and before *tail's
         temp->nextPtr = tail;
         temp->prevPtr = tail->prevPtr;
         tail->prevPtr = temp->prevPtr->nextPtr = temp;
 
         //setting the DLink's theElement value to it
         temp->theElement = it;
-        //the only part in the code where cnt is incremented
+        //increment cnt
         cnt++;
-        //moveToEnd();//moves *curr to DLink before *tail
     }
 
     // Remove and return the current element
@@ -230,13 +220,13 @@ public:
         if(curr->nextPtr == tail) return '\0';//E(NULL)
 
         E it = curr->nextPtr->theElement;
-        //We aim to delete *temp by the end, so we connect first the DLinks previous
-        //and after *curr then delete the DLink pointed by *temp
+        //We aim to delete *temp by the end, so we connect first the DLinks of *curr's
+        //and after it then delete the DLink pointed by *temp
         DLink<E> *temp = curr->nextPtr;
         curr->nextPtr->nextPtr->prevPtr = curr;
         curr->nextPtr = curr->nextPtr->nextPtr;
         delete temp;
-        //the only part in the code where cnt is decremented
+        //decrement cnt
         cnt--;
 
         if(curr->nextPtr == tail && curr != head) curr = curr->prevPtr;
@@ -246,23 +236,21 @@ public:
     // Advance current to the previous element
     void prev()
     {
-        //checks first if there are DLinks between *head and *tail and *curr is not next to *head,
+        //checks first if there are DLinks between *head's and *tail's DLinks and *curr is not equal to *head,
         //if so assigns *curr to the previous DLink 
-        if(cnt > 0 || curr != head) curr = curr->prevPtr;
+        if(cnt > 0 && curr != head) curr = curr->prevPtr;
     }
 
     // Return position of the current element
     int currPos() const
     {
-        //asserts first that curr isn't NULL and that there are DLinks between
-        //*head and *tail before looping through the DList and counting the position
-        //just as it stops at the DLink pointed by *curr
         int num;
         DLink<E> *temp = head;
+        //checks first if *temp is equal to *curr before incrementing num
         for(num = 0; temp != curr; num++){
             temp = temp->nextPtr;
         }
-        //return the position in integer of *curr
+        //return the integer position of *curr's DLink
         return num;
     }
 
@@ -271,6 +259,7 @@ public:
     {
         assert(0 <= pos && pos < cnt);
         curr = head;
+        //checks first if i is less than pos before moving *curr 1 DLink to the right
         for(int i = 0; i < pos; i++){
             curr = curr->nextPtr;
         }
