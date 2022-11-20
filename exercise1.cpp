@@ -74,12 +74,6 @@ public:
 
 
     // The copy constructor
-    //
-    //
-    // PACHECK
-    //
-    //
-    //
     DList(const DList &source)
     {
         //allocates memory for head and tail
@@ -164,7 +158,6 @@ public:
     }
 
     // Return the current element
-    //Double Check
     E & getValue() const
     {
         //asserts first if *curr's DLink isn't before the DLink pointed by *tail or *curr is not the same as *tail before
@@ -174,8 +167,6 @@ public:
     }
 
     // Insert value at current position
-    // curr->next ang new DLink
-    //
     void insert(const E &it)
     {
         //allocate memory first for temp and assert it was successful
